@@ -8,11 +8,11 @@ public class EntrollCoursesByStudentsRequest {
     private int id;
     private String name;
     private String email;
-    private List<Courses> listCourses;
+    private List<CourseResponse> listCourses;
 
     public EntrollCoursesByStudentsRequest() {}
 
-    public EntrollCoursesByStudentsRequest(int id, String name, String email, List<Courses> listCourses) {
+    public EntrollCoursesByStudentsRequest(int id, String name, String email, List<CourseResponse> listCourses) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -31,7 +31,7 @@ public class EntrollCoursesByStudentsRequest {
         this.email = email;
     }
 
-    public void setListCourses(List<Courses> listCourses) {
+    public void setListCourses(List<CourseResponse> listCourses) {
         this.listCourses = listCourses;
     }
 
@@ -47,7 +47,7 @@ public class EntrollCoursesByStudentsRequest {
         return email;
     }
 
-    public List<Courses> getListCourses() {
+    public List<CourseResponse> getListCourses() {
         return listCourses;
     }
 }

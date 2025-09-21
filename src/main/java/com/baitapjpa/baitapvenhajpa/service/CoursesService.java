@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CoursesService {
@@ -20,8 +21,16 @@ public class CoursesService {
         return  coursesRepository.findAll().stream().map(c -> new CourseResponse(c.getId(),c.getName())).toList();
     }
 
-    public Courses getCoursesById(int id) {
-        return coursesRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Course not found"));
+    public CourseResponse getCoursesById(int id) {
+        Courses courses = coursesRepository.findById(id).orElse(null);
+        CourseResponse  courseResponse = new CourseResponse();
+        if (courses != null){
+            courseResponse.setId(courses.getId());
+            courseResponse.setName(courses.getName());
+        }else {
+            return null;
+        }
+        return courseResponse;
     }
 
     public Courses saveCourses(SaveCoursesRequest saveCoursesRequest) {

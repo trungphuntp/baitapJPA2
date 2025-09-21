@@ -35,15 +35,17 @@ public class CategoriesService {
         return categories;
     }
 
-    public Categories saveCategories(SaveCategoriesRequest saveCategoriesRequest) {
+    public CategoryResponse saveCategories(SaveCategoriesRequest saveCategoriesRequest) {
         Categories categories = new Categories();
         categories.setName(saveCategoriesRequest.getName());
-        return categoriesRepository.save(categories);
+
+        Categories savedCategories = categoriesRepository.save(categories);
+        return new CategoryResponse(savedCategories.getId(), savedCategories.getName());
     }
 
     public ProductsResponse addCategoryForProducts(int idCategory, AddCategoryRequest addCategoryRequest) {
-        Products products = productsRepository.findById(addCategoryRequest.getId()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
-        Categories categories = categoriesRepository.findById(idCategory).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+        Products products = productsRepository.findById(addCategoryRequest.getId()).orElse(null);
+        Categories categories = categoriesRepository.findById(idCategory).orElse(null);
         products.setCategory(categories);
 
         Products productsAffterAdd = productsRepository.save(products);

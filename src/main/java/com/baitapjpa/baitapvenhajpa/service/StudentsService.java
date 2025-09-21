@@ -6,10 +6,8 @@ import com.baitapjpa.baitapvenhajpa.entity.Students;
 import com.baitapjpa.baitapvenhajpa.repository.CoursesRepository;
 import com.baitapjpa.baitapvenhajpa.repository.EnrollmentRepository;
 import com.baitapjpa.baitapvenhajpa.repository.StudentsRepository;
+import com.baitapjpa.baitapvenhajpa.response.*;
 import com.baitapjpa.baitapvenhajpa.request.SaveStudentRequest;
-import com.baitapjpa.baitapvenhajpa.response.EnrollStudentResponse;
-import com.baitapjpa.baitapvenhajpa.response.EntrollCoursesByStudentsRequest;
-import com.baitapjpa.baitapvenhajpa.response.StudentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,31 +30,39 @@ public class StudentsService {
     }
 
     public StudentResponse getStudentById(int id){
-        Students students = studentsRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found"));
+        Students students = studentsRepository.findById(id).orElse(null);
         StudentResponse  studentResponse = new StudentResponse();
-        studentResponse.setId(students.getId());
-        studentResponse.setName(students.getName());
-        studentResponse.setEmail(students.getEmail());
-
+        if (students!=null){
+            studentResponse.setId(students.getId());
+            studentResponse.setName(students.getName());
+            studentResponse.setEmail(students.getEmail());
+        }else {
+            studentResponse = null;
+        }
         return studentResponse;
     }
 
 
-    public Students saveStudents(SaveStudentRequest saveStudentRequest) {
+    public SaveStudentsResponse saveStudents(SaveStudentRequest saveStudentRequest) {
         Students students = new Students();
         students.setName(saveStudentRequest.getName());
         students.setEmail(saveStudentRequest.getEmail());
+        Students studentCreated = studentsRepository.save(students);
 
-        Students savedStudents = studentsRepository.save(students);
-        return savedStudents;
+        SaveStudentsResponse saveStudentsResponse = new SaveStudentsResponse();
+        saveStudentsResponse.setId(studentCreated.getId());
+        saveStudentsResponse.setName(studentCreated.getName());
+        saveStudentsResponse.setEmail(studentCreated.getEmail());
+
+        return saveStudentsResponse;
     }
 
 
     public EnrollStudentResponse registerCourse(int idStudent, int idCourse) {
         Students students = studentsRepository.findById(idStudent)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found"));
+                .orElse(null);
         Courses courses = coursesRepository.findById(idCourse)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+                .orElse(null);
 
         boolean exists = enrollmentRepository.findByStudentsIdAndCoursesId(idStudent, idCourse).isPresent();
         if (exists) {
@@ -78,28 +84,29 @@ public class StudentsService {
     }
 
     public EntrollCoursesByStudentsRequest getEnrollmentCoursesByStudentId(int idStudent) {
-        List<Enrollment> listEnrollmentByIdStudent = enrollmentRepository.findByStudentsId(idStudent)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Courses's student not found"));
-
-        Students students = null;
-        List<Courses> listCourses = new ArrayList<>();
-
-        if (listEnrollmentByIdStudent.size() > 0) {
-             students = listEnrollmentByIdStudent.get(0).getStudents();
-            for (Enrollment enrollment : listEnrollmentByIdStudent) {
-                listCourses.add(enrollment.getCourses());
-            }
-        } else {
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Courses's student not found");
-        }
-
+        List<Enrollment> listEnrollmentByIdStudent = enrollmentRepository.findByStudentsId(idStudent).orElse(new ArrayList<>());
         EntrollCoursesByStudentsRequest result = new EntrollCoursesByStudentsRequest();
-        if (listCourses.size() > 0 && students != null) {
+
+        StudentResponse students = getStudentById(idStudent);
+        if (students!=null){
             result.setId(students.getId());
             result.setName(students.getName());
             result.setEmail(students.getEmail());
-            result.setListCourses(listCourses);
         }
+
+        List<CourseResponse> listCourses = new ArrayList<>();
+        if (listEnrollmentByIdStudent.size() > 0) {
+            for (Enrollment enrollment : listEnrollmentByIdStudent) {
+
+                CourseResponse courseResponse = new CourseResponse();
+                courseResponse.setId(enrollment.getCourses().getId());
+                courseResponse.setName(enrollment.getCourses().getName());
+
+                listCourses.add(courseResponse);
+            }
+        }
+        result.setListCourses(listCourses);
+
         return result;
     }
 }

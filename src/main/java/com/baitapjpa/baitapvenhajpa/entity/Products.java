@@ -3,7 +3,7 @@ package com.baitapjpa.baitapvenhajpa.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
-@Entity
+@Entity(name = "products")
 public class Products {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)

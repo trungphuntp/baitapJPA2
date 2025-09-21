@@ -62,6 +62,7 @@ public class ProductsService {
 
         Categories  categories = categoriesRepository.findById(saveProductRequest
                 .getId_category()).orElse(null);
+
         products.setCategory(categories);
         return productsRepository.save(products);
     }
