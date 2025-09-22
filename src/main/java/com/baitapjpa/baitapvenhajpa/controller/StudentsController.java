@@ -1,12 +1,9 @@
 package com.baitapjpa.baitapvenhajpa.controller;
 
-import com.baitapjpa.baitapvenhajpa.entity.Courses;
-import com.baitapjpa.baitapvenhajpa.entity.Students;
-import com.baitapjpa.baitapvenhajpa.response.SaveStudentsResponse;
 import com.baitapjpa.baitapvenhajpa.request.SaveStudentRequest;
 import com.baitapjpa.baitapvenhajpa.response.*;
 import com.baitapjpa.baitapvenhajpa.service.CoursesService;
-import com.baitapjpa.baitapvenhajpa.service.StudentsService;
+import com.baitapjpa.baitapvenhajpa.service.Imp.StudentsServiceImp;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +15,9 @@ import java.util.List;
 @RequestMapping("/students")
 public class StudentsController {
     @Autowired
-    private StudentsService studentsService;
+    private StudentsServiceImp studentsService;
     @Autowired
-    private CoursesService coursesService;
+    private CoursesService coursesServiceImp;
 
 
     @GetMapping
@@ -74,7 +71,7 @@ public class StudentsController {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setData(enrollStudentResponse);
 
-        CourseResponse courses = coursesService.getCoursesById(courseId);
+        CourseResponse courses = coursesServiceImp.getCoursesById(courseId);
         if (courses == null){
             baseResponse.setCode(404);
             baseResponse.setMessage("Course Not Found");

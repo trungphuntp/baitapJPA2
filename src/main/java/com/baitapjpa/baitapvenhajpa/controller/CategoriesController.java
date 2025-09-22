@@ -8,6 +8,8 @@ import com.baitapjpa.baitapvenhajpa.response.BaseResponse;
 import com.baitapjpa.baitapvenhajpa.response.CategoryResponse;
 import com.baitapjpa.baitapvenhajpa.response.ProductsResponse;
 import com.baitapjpa.baitapvenhajpa.service.CategoriesService;
+import com.baitapjpa.baitapvenhajpa.service.Imp.CategoriesServiceImp;
+import com.baitapjpa.baitapvenhajpa.service.Imp.ProductsServiceImp;
 import com.baitapjpa.baitapvenhajpa.service.ProductsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

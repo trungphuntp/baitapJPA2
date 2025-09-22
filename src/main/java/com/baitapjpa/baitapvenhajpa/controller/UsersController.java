@@ -1,6 +1,5 @@
 package com.baitapjpa.baitapvenhajpa.controller;
 
-import com.baitapjpa.baitapvenhajpa.entity.Users;
 import com.baitapjpa.baitapvenhajpa.request.SaveUsersResponse;
 import com.baitapjpa.baitapvenhajpa.response.BaseResponse;
 import com.baitapjpa.baitapvenhajpa.response.UsersResponse;
